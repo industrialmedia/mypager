@@ -1,0 +1,7 @@
+views-mypager:
+  version: VERSION
+  js:
+    js/mypager.js : {}
+  dependencies:
+    - core/jquery
+    - core/drupal

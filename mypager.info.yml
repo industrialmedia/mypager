@@ -1,0 +1,14 @@
+name: mypager
+type: module
+description: Mypager full and load more.
+package: AAMID
+type: module
+core: 8.x
+version: 1.0
+dependencies:
+ - views
+
+
+
+
+

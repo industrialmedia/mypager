@@ -1,0 +1,5 @@
+services:
+  mypager.ajax_subscriber:
+    class: Drupal\mypager\EventSubscriber\MypagerAjaxResponseSubscriber
+    tags:
+      - { name: event_subscriber }
