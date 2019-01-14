@@ -28,9 +28,6 @@ function mypager_preprocess_mypager_pager(&$vars) {
     'class' => ['js-pager__items', 'pager'],
     'data-drupal-views-mypager' => TRUE,
   ]);
-
-
-
   $count_new_load = $pager_limits[$element] - ($pager_total[$element] * $pager_limits[$element] - $pager_total_items[$element]);
   if (empty($count_new_load)) {
     $count_new_load = $pager_limits[$element];
@@ -40,14 +37,22 @@ function mypager_preprocess_mypager_pager(&$vars) {
   }
   $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $vars['options']['mypager']['button_text']);
   $vars['options']['mypager']['button_text'] = Markup::create($button_text);
-
-
-
-
-
-
 }
 
+
+/**
+ * Implements hook_preprocess_mypager_pager().
+ */
+function mypager_preprocess_pager(&$vars) {
+  global $pager_total;
+  if (isset($vars['element'])) {
+    $element = $vars['element'];
+  }
+  else {
+    $element = 0;
+  }
+  $vars['options']['max_page_number'] = $pager_total[$element];
+}
 
 
 
