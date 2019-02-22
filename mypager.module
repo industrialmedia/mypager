@@ -13,20 +13,19 @@ use Drupal\Core\Render\Markup;
 /**
  * Implements hook_preprocess_mypager_pager().
  */
-function mypager_preprocess_mypager_pager(&$vars) {
+function template_preprocess_mypager_pager(&$variables) {
   global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
-  $element = $vars['element'];
-  $parameters = $vars['parameters'];
+  $element = $variables['element'];
+  $parameters = $variables['parameters'];
   if ($pager_page_array[$element] < ($pager_total[$element] - 1)) {
     $options = array(
       'query' => pager_query_add_page($parameters, $element, $pager_page_array[$element] + 1),
     );
-    $vars['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
+    $variables['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
   }
-  $vars['#cache']['contexts'][] = 'url.query_args';
-  $vars['attributes'] = new Attribute([
+  $variables['#cache']['contexts'][] = 'url.query_args';
+  $variables['attributes'] = new Attribute([
     'class' => ['js-pager__items', 'pager'],
-    'data-drupal-views-mypager' => TRUE,
   ]);
   $count_new_load = $pager_limits[$element] - ($pager_total[$element] * $pager_limits[$element] - $pager_total_items[$element]);
   if (empty($count_new_load)) {
@@ -35,23 +34,29 @@ function mypager_preprocess_mypager_pager(&$vars) {
   if ($pager_page_array[$element] < ($pager_total[$element] - 2)) {
     $count_new_load = $pager_limits[$element];
   }
-  $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $vars['options']['mypager']['button_text']);
-  $vars['options']['mypager']['button_text'] = Markup::create($button_text);
+  $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $variables['options']['mypager']['button_text']);
+  $variables['options']['mypager']['button_text'] = Markup::create($button_text);
+
+
+ 
+
 }
 
 
 /**
- * Implements hook_preprocess_mypager_pager().
+ * Implements hook_preprocess_pager().
  */
-function mypager_preprocess_pager(&$vars) {
-  global $pager_total;
-  if (isset($vars['element'])) {
-    $element = $vars['element'];
-  }
-  else {
-    $element = 0;
-  }
-  $vars['options']['max_page_number'] = $pager_total[$element];
+function mypager_preprocess_pager(&$variables) {
+  global $pager_total; 
+  $element = $variables['pager']['#element'];
+  $variables['options']['max_page_number'] = $pager_total[$element];
+
+  //global $mypager_current;
+  //$mypager_current[$element][] = $variables['current'];
+  //dsm($mypager_current[$element]);
+
+  // $variables['#attached']['drupalSettings']['mypager'][$element]['currents'] = $variables['current'];
+
 }
 
 
@@ -59,13 +64,13 @@ function mypager_preprocess_pager(&$vars) {
 /**
  * Implements hook_preprocess_views_view().
  */
-function mypager_preprocess_views_view(&$vars) {
-  $view = $vars['view'];
-  if ($view->getDisplay()->isPagerEnabled() && !empty($vars['rows'])) {
+function mypager_preprocess_views_view(&$variables) {
+  $view = $variables['view'];
+  if ($view->getDisplay()->isPagerEnabled() && !empty($variables['rows'])) {
     $pager = $view->getPager();
     if ($pager && $pager instanceof Mypager) {
-      $vars['rows']['#theme_wrappers'] = ['container'];
-      $vars['rows']['#attributes'] = [
+      $variables['rows']['#theme_wrappers'] = ['container'];
+      $variables['rows']['#attributes'] = [
         'data-drupal-views-mypager-content-wrapper' => TRUE,
         'class' => [
           'views-mypager-content-wrapper',

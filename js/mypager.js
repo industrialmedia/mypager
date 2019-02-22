@@ -5,12 +5,10 @@
   var $window = $(window);
 
   // The selector for both manual load.
-  var pagerSelector = '[data-drupal-views-mypager]';
+  var pagerSelector = '[data-drupal-views-mypager-wrapper]';
 
   // The selector for the pager.
   var contentWrapperSelector = '[data-drupal-views-mypager-content-wrapper]';
-
-
 
 
   /**
@@ -35,17 +33,29 @@
     $existingPager.removeOnce('mypager');
 
     var $newRows = $newView.find(contentWrapperSelector).children();
-    var $newPager = $newView.find('.js-pager__items');
+    var $newPager = $newView.find(pagerSelector);
 
     // Add the new rows to existing view.
+    $newRows.hide();
     view.$view.find(contentWrapperSelector).append($newRows);
+    $newRows.slideDown(700);
+
+
     // Replace the pager link with the new link and ajaxPageState values.
+    var existingActives = $existingPager.data('actives');
+    var newActives = $newPager.data('actives');
+    newActives = existingActives + '|' + newActives;
+    $newPager.data('actives', newActives);
+    newActives = newActives.split('|');
+    $.each(newActives, function (index, value) {
+      $newPager.find('li[data-key="' + value + '"]').addClass('is-active');
+    });
     $existingPager.replaceWith($newPager);
+
 
     // Run views and VIS behaviors.
     Drupal.attachBehaviors(view.$view[0]);
   };
-
 
 
 })(jQuery, Drupal);
