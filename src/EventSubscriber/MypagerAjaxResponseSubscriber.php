@@ -12,6 +12,38 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class MypagerAjaxResponseSubscriber implements EventSubscriberInterface {
 
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents() {
+    return [KernelEvents::RESPONSE => [['onResponse']]];
+  }
+
+
+  /**
+   * Renders the ajax commands right before preparing the result.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   *   The response event, which contains the possible AjaxResponse object.
+   */
+  public function onResponse(FilterResponseEvent $event) {
+    $response = $event->getResponse();
+    if (!($response instanceof ViewAjaxResponse)) {
+      return;
+    }
+    $view = $response->getView();
+    if ($view->getPager()
+        ->getPluginId() !== 'mypager' || $view->getCurrentPage() === 0
+    ) {
+      return;
+    }
+
+    $commands = &$response->getCommands();
+    $this->alterPaginationCommands($commands);
+  }
+
+
   /**
    * Alter the views AJAX response commands only for the mypager.
    *
@@ -32,31 +64,5 @@ class MypagerAjaxResponseSubscriber implements EventSubscriberInterface {
     }
   }
 
-  /**
-   * Renders the ajax commands right before preparing the result.
-   *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
-   *   The response event, which contains the possible AjaxResponse object.
-   */
-  public function onResponse(FilterResponseEvent $event) {
-    $response = $event->getResponse();
-    if (!($response instanceof ViewAjaxResponse)) {
-      return;
-    }
-    $view = $response->getView();
-    if ($view->getPager()->getPluginId() !== 'mypager' || $view->getCurrentPage() === 0) {
-      return;
-    }
-  
-    $commands = &$response->getCommands();
-    $this->alterPaginationCommands($commands);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getSubscribedEvents() {
-    return [KernelEvents::RESPONSE => [['onResponse']]];
-  }
 
 }

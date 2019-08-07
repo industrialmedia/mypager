@@ -10,6 +10,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\mypager\Plugin\views\pager\Mypager;
 use Drupal\Core\Render\Markup;
 
+
 /**
  * Implements hook_preprocess_mypager_pager().
  */
@@ -36,10 +37,6 @@ function template_preprocess_mypager_pager(&$variables) {
   }
   $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $variables['options']['mypager']['button_text']);
   $variables['options']['mypager']['button_text'] = Markup::create($button_text);
-
-
- 
-
 }
 
 
@@ -47,24 +44,18 @@ function template_preprocess_mypager_pager(&$variables) {
  * Implements hook_preprocess_pager().
  */
 function mypager_preprocess_pager(&$variables) {
-  global $pager_total; 
+  global $pager_total;
   $element = $variables['pager']['#element'];
   $variables['options']['max_page_number'] = $pager_total[$element];
-
-  //global $mypager_current;
-  //$mypager_current[$element][] = $variables['current'];
-  //dsm($mypager_current[$element]);
-
   // $variables['#attached']['drupalSettings']['mypager'][$element]['currents'] = $variables['current'];
-
 }
-
 
 
 /**
  * Implements hook_preprocess_views_view().
  */
 function mypager_preprocess_views_view(&$variables) {
+  /* @var \Drupal\views\ViewExecutable $view */
   $view = $variables['view'];
   if ($view->getDisplay()->isPagerEnabled() && !empty($variables['rows'])) {
     $pager = $view->getPager();

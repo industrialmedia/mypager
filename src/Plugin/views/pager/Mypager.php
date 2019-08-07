@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Drupal\mypager\Plugin\views\pager;
 
 
@@ -25,17 +24,14 @@ class Mypager extends Full {
    * {@inheritdoc}
    */
   public function render($input) {
-
     $full_pager = parent::render($input);
     $element = $full_pager['#element'];
     $full_pager['#theme'] = $this->view->buildThemeFunctions('pager');
     $full_pager['#is_mypager'] = TRUE;
     $full_pager = drupal_render($full_pager);
     $full_pager = str_replace('js-pager__items', '', $full_pager);  // Удаляем возможность аякса
-
     global $pager_page_array;
     $current = $pager_page_array[$element] + 1;
-
     $build['mypager'] = [
       '#theme' => $this->themeFunctions(),
       '#options' => $this->options, // $this->options['mypager'],
@@ -47,7 +43,6 @@ class Mypager extends Full {
       '#prefix' => '<div class="mypager-wrapper" data-drupal-views-mypager-wrapper data-actives="' . $current . '">',
       '#suffix' => $full_pager . '</div>',
     ];
-
     return $build;
   }
 
