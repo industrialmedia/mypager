@@ -32,6 +32,7 @@ class Mypager extends Full {
     $full_pager = str_replace('js-pager__items', '', $full_pager);  // Удаляем возможность аякса
     global $pager_page_array;
     $current = $pager_page_array[$element] + 1;
+
     $build['mypager'] = [
       '#theme' => $this->themeFunctions(),
       '#options' => $this->options, // $this->options['mypager'],
@@ -43,6 +44,13 @@ class Mypager extends Full {
       '#prefix' => '<div class="mypager-wrapper" data-drupal-views-mypager-wrapper data-actives="' . $current . '">',
       '#suffix' => $full_pager . '</div>',
     ];
+
+    global $pager_total;
+    if ($pager_total[$element] < 2) { // Если кол-во страниц меньше 2, удаляем не нужный див
+      unset($build['mypager']['#prefix']);
+      unset($build['mypager']['#suffix']);
+    }
+
     return $build;
   }
 
