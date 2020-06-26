@@ -16,11 +16,15 @@ use Drupal\Core\Render\Markup;
  */
 function template_preprocess_mypager_pager(&$variables) {
   global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
+
+  /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
+  $pager_manager = \Drupal::service('pager.manager');
+
   $element = $variables['element'];
   $parameters = $variables['parameters'];
   if ($pager_page_array[$element] < ($pager_total[$element] - 1)) {
     $options = array(
-      'query' => pager_query_add_page($parameters, $element, $pager_page_array[$element] + 1),
+      'query' => $pager_manager->getUpdatedParameters($parameters, $element, $pager_page_array[$element] + 1),
     );
     $variables['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
   }

@@ -28,7 +28,8 @@ class Mypager extends Full {
     $element = $full_pager['#element'];
     $full_pager['#theme'] = $this->view->buildThemeFunctions('pager');
     $full_pager['#is_mypager'] = TRUE;
-    $full_pager = drupal_render($full_pager);
+
+    $full_pager = $this->getRenderer()->render($full_pager);
     $full_pager = str_replace('js-pager__items', '', $full_pager);  // Удаляем возможность аякса
     global $pager_page_array;
     $current = $pager_page_array[$element] + 1;

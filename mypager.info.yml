@@ -2,9 +2,9 @@ name: mypager
 type: module
 description: Mypager full and load more.
 package: AAMID
-type: module
-core: 8.x
-version: 1.0
+core_version_requirement: ^8 || ^9
+version: '1.0.0'
+
 dependencies:
  - views
 
