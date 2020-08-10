@@ -15,16 +15,16 @@ use Drupal\Core\Render\Markup;
  * Implements hook_preprocess_mypager_pager().
  */
 function template_preprocess_mypager_pager(&$variables) {
-  global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
+  $element = $variables['element'];
+  $parameters = $variables['parameters'];
 
   /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
   $pager_manager = \Drupal::service('pager.manager');
+  $pager = $pager_manager->getPager($element);
 
-  $element = $variables['element'];
-  $parameters = $variables['parameters'];
-  if ($pager_page_array[$element] < ($pager_total[$element] - 1)) {
+  if ($pager->getCurrentPage() < ($pager->getTotalPages() - 1)) {
     $options = array(
-      'query' => $pager_manager->getUpdatedParameters($parameters, $element, $pager_page_array[$element] + 1),
+      'query' => $pager_manager->getUpdatedParameters($parameters, $element, $pager->getCurrentPage() + 1),
     );
     $variables['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
   }
@@ -32,12 +32,12 @@ function template_preprocess_mypager_pager(&$variables) {
   $variables['attributes'] = new Attribute([
     'class' => ['js-pager__items', 'pager'],
   ]);
-  $count_new_load = $pager_limits[$element] - ($pager_total[$element] * $pager_limits[$element] - $pager_total_items[$element]);
+  $count_new_load = $pager->getLimit() - ($pager->getTotalPages() * $pager->getLimit() - $pager->getTotalItems());
   if (empty($count_new_load)) {
-    $count_new_load = $pager_limits[$element];
+    $count_new_load = $pager->getLimit();
   }
-  if ($pager_page_array[$element] < ($pager_total[$element] - 2)) {
-    $count_new_load = $pager_limits[$element];
+  if ($pager->getCurrentPage() < ($pager->getTotalPages() - 2)) {
+    $count_new_load = $pager->getLimit();
   }
   $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $variables['options']['mypager']['button_text']);
   $variables['options']['mypager']['button_text'] = Markup::create($button_text);
@@ -48,9 +48,11 @@ function template_preprocess_mypager_pager(&$variables) {
  * Implements hook_preprocess_pager().
  */
 function mypager_preprocess_pager(&$variables) {
-  global $pager_total;
   $element = $variables['pager']['#element'];
-  $variables['options']['max_page_number'] = $pager_total[$element];
+  /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
+  $pager_manager = \Drupal::service('pager.manager');
+  $pager = $pager_manager->getPager($element);
+  $variables['options']['max_page_number'] = $pager->getTotalPages();
   // $variables['#attached']['drupalSettings']['mypager'][$element]['currents'] = $variables['current'];
 }
 
