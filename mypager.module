@@ -52,8 +52,10 @@ function mypager_preprocess_pager(&$variables) {
   /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
   $pager_manager = \Drupal::service('pager.manager');
   $pager = $pager_manager->getPager($element);
-  $variables['options']['max_page_number'] = $pager->getTotalPages();
-  // $variables['#attached']['drupalSettings']['mypager'][$element]['currents'] = $variables['current'];
+  if ($pager) {
+    $variables['options']['max_page_number'] = $pager->getTotalPages();
+    // $variables['#attached']['drupalSettings']['mypager'][$element]['currents'] = $variables['current'];
+  }
 }
 
 
