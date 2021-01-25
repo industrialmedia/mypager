@@ -39,7 +39,8 @@ function template_preprocess_mypager_pager(&$variables) {
   if ($pager->getCurrentPage() < ($pager->getTotalPages() - 2)) {
     $count_new_load = $pager->getLimit();
   }
-  $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $variables['options']['mypager']['button_text']);
+  $button_text = t($variables['options']['mypager']['button_text']);
+  $button_text = str_replace('@count', ' <span>' . $count_new_load . '</span>', $button_text);
   $variables['options']['mypager']['button_text'] = Markup::create($button_text);
 }
 
