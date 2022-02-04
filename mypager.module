@@ -23,10 +23,12 @@ function template_preprocess_mypager_pager(&$variables) {
   $pager = $pager_manager->getPager($element);
 
   if ($pager->getCurrentPage() < ($pager->getTotalPages() - 1)) {
-    $options = array(
+    $options = [
       'query' => $pager_manager->getUpdatedParameters($parameters, $element, $pager->getCurrentPage() + 1),
-    );
-    $variables['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
+    ];
+    $href = Url::fromRoute('<current>', [], $options)->toString();
+    // $href = str_replace('/views/ajax?', '?', $href);
+    $variables['items']['next']['href'] = $href;
   }
   $variables['#cache']['contexts'][] = 'url.query_args';
   $variables['attributes'] = new Attribute([

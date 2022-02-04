@@ -26,11 +26,11 @@
     var view = Drupal.views.instances[currentViewId];
     // Remove once so that the exposed form and pager are processed on
     // behavior attach.
-    view.$view.removeOnce('ajax-pager');
-    view.$exposed_form.removeOnce('exposed-form');
+    once.remove('ajax-pager', view.$view);
+    once.remove('exposed-form', view.$exposed_form);
     // Make sure mypager can be reinitialized.
     var $existingPager = view.$view.find(pagerSelector);
-    $existingPager.removeOnce('mypager');
+    once.remove('mypager', $existingPager);
 
     var $newRows = $newView.find(contentWrapperSelector).children();
     var $newPager = $newView.find(pagerSelector);
